@@ -1,0 +1,31 @@
+Repo-Scan v1.1.1 - Información del Release
+===============================================
+
+Fecha: dom 21 sep 2025 23:58:52 CST
+Versión: 1.1.1
+Repositorio: https://github.com/Origonlabs/CVE_Security
+
+Archivos incluidos:
+- repo_scan-1.1.1.tar.gz (código fuente)
+- repo_scan-1.1.1-py3-none-any.whl (paquete Python)
+- repo-scan-1.1.1-1.fc43.noarch.rpm (paquete RPM simulado)
+- install.sh (script de instalación)
+- checksums.txt (verificación de integridad)
+- README.md (documentación principal)
+- CHANGELOG.md (historial de cambios)
+- RELEASE_NOTES_v1.1.1.md (notas de lanzamiento)
+- docs/ (documentación completa)
+
+Instalación:
+1. Para RPM: sudo dnf install repo-scan-1.1.1-1.fc43.noarch.rpm
+2. Para Python: pip install repo_scan-1.1.1-py3-none-any.whl
+3. Para instalación automática: ./install.sh
+
+Uso:
+- GUI: repo-scan-gui
+- CLI: repo-scan --help
+- Web: repo-scan-gui --web
+
+Soporte:
+- Issues: https://github.com/Origonlabs/CVE_Security/issues
+- Discussions: https://github.com/Origonlabs/CVE_Security/discussions

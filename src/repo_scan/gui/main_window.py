@@ -721,7 +721,7 @@ Features:
     
     def show_documentation(self):
         """Open documentation in browser."""
-        webbrowser.open("https://github.com/example/repo-scan")
+        webbrowser.open("https://github.com/Origonlabs/CVE_Security")
     
     def handle_scan_error(self, error_message: str):
         """Handle scan errors."""

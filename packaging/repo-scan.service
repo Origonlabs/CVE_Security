@@ -1,6 +1,6 @@
 [Unit]
 Description=Repo-Scan Security Scanning Service
-Documentation=https://github.com/example/repo-scan
+Documentation=https://github.com/Origonlabs/CVE_Security
 After=network.target
 Wants=network.target
 

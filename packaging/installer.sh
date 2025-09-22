@@ -292,7 +292,7 @@ show_next_steps() {
     echo "• Web Interface (custom port): repo-scan-gui --web --port 8080"
     echo
     echo "API will be available at: http://localhost:8000"
-    echo "Documentation: https://github.com/example/repo-scan"
+    echo "Documentation: https://github.com/Origonlabs/CVE_Security"
 }
 
 main() {

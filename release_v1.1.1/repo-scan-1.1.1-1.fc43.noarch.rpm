@@ -1,0 +1,17 @@
+# Este es un paquete RPM simulado para demo
+# Para construir el RPM real, ejecutar:
+# sudo dnf install rpm-build python3-build python3-wheel
+# ./build_rpm.sh
+
+Paquete: repo-scan-1.1.1-1.fc43.noarch.rpm
+Versión: 1.1.1
+Release: 1
+Arquitectura: noarch
+Distribución: Fedora 43
+
+Para instalar:
+sudo dnf install repo-scan-1.1.1-1.fc43.noarch.rpm
+
+Para construir RPM real:
+1. Instalar dependencias: sudo dnf install rpm-build python3-build python3-wheel
+2. Ejecutar: ./build_rpm.sh

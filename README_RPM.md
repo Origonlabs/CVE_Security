@@ -100,7 +100,7 @@ rpmbuild --define "_topdir $(pwd)/rpm_build" -ba rpm_build/SPECS/repo-scan.spec
 - **Arquitectura**: noarch
 - **Licencia**: MIT
 - **Mantenedor**: Security Team <security@example.com>
-- **URL**: https://github.com/example/repo-scan
+- **URL**: https://github.com/Origonlabs/CVE_Security
 
 ### Tamaño
 - **Tarball fuente**: ~83KB
