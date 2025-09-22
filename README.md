@@ -4,177 +4,178 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Fedora](https://img.shields.io/badge/Fedora-supported-green.svg)](https://getfedora.org/)
 
-Repo-Scan es una herramienta avanzada de análisis de seguridad para repositorios que proporciona análisis integral de seguridad para repositorios de software. Soporta múltiples motores de escaneo incluyendo SAST, SCA, detección de secretos, escaneo de IaC y más.
+Repo-Scan is an advanced repository security scanning tool that provides comprehensive security analysis for software repositories. It supports multiple scanning engines including SAST, SCA, secret detection, IaC scanning, and more.
 
-## 🚀 Características
+## Features
 
-### Motores de Escaneo
-- **SAST (Static Application Security Testing)**: Análisis estático de código con Semgrep y Bandit
-- **SCA (Software Composition Analysis)**: Análisis de dependencias con Trivy
-- **Detección de Secretos**: Detección de secretos y credenciales con Gitleaks
-- **IaC (Infrastructure as Code)**: Análisis de seguridad de infraestructura con Checkov
-- **Contenedores**: Análisis de seguridad de contenedores con Trivy
-- **Supply Chain**: Verificación de cadena de suministro
+### Security Scanning Engines
+- **SAST (Static Application Security Testing)**: Static code analysis with Semgrep and Bandit
+- **SCA (Software Composition Analysis)**: Dependency analysis with Trivy
+- **Secret Detection**: Secret and credential detection with Gitleaks
+- **IaC (Infrastructure as Code)**: Infrastructure security analysis with Checkov
+- **Container Security**: Container security analysis with Trivy
+- **Supply Chain**: Supply chain verification
 
-### Sistema de Scoring Avanzado
-- Puntuación de riesgo personalizable (0-100)
-- Factores multiplicadores basados en contexto
-- Priorización automática de hallazgos
-- Análisis de exposición en historial de Git
-- Detección de explotabilidad
+### Advanced Risk Scoring System
+- Customizable risk scoring (0-100)
+- Context-based multiplier factors
+- Automatic finding prioritization
+- Git history exposure analysis
+- Exploitability detection
 
-### Reportes y Salidas
-- **JSON**: Formato estructurado para integración
-- **HTML**: Reporte interactivo y visual
-- **JUnit**: Compatible con CI/CD
-- **API REST**: Para automatización
+### Reporting and Output Formats
+- **JSON**: Structured format for integration
+- **HTML**: Interactive and visual reports
+- **JUnit**: CI/CD compatible
+- **SARIF**: Security tool compatibility
+- **PDF**: Executive reports
 
-### Interfaces de Usuario
-- **GUI de Escritorio**: Interfaz nativa con Tkinter
-- **Interfaz Web**: Dashboard moderno con FastAPI
-- **CLI**: Línea de comandos para automatización
+### User Interfaces
+- **Desktop GUI**: Native interface with Tkinter
+- **Web Interface**: Modern dashboard with FastAPI
+- **CLI**: Command line interface for automation
+- **REST API**: Programmatic access
 
-### Integración y Automatización
-- Integración con CI/CD (GitHub Actions, GitLab CI)
-- Notificaciones (Slack, Email)
-- API REST con autenticación
-- Sistema de plugins extensible
-- Soporte para repositorios locales y remotos
+### Integration and Automation
+- CI/CD integration (GitHub Actions, GitLab CI, Jenkins)
+- Notification systems (Slack, Email, Webhooks)
+- REST API with authentication
+- Extensible plugin system
+- Local and remote repository support
 
-## 📦 Instalación
+## Installation
 
-### Instalación en Fedora
+### Fedora Installation
 
-#### Opción 1: Instalación Automática
+#### Option 1: Automatic Installation
 ```bash
-# Clonar el repositorio
+# Clone the repository
 git clone https://github.com/Origonlabs/CVE_Security.git
-cd repo-scan
+cd CVE_Security
 
-# Ejecutar el instalador
+# Run the installer
 sudo ./packaging/installer.sh
 ```
 
-#### Opción 2: Instalación Manual
+#### Option 2: Manual Installation
 ```bash
-# Instalar dependencias del sistema
+# Install system dependencies
 sudo dnf install python3 python3-pip git curl wget
 
-# Instalar herramientas de seguridad
+# Install security tools
 pip3 install semgrep bandit checkov
-# Instalar Gitleaks y Trivy (ver documentación)
+# Install Gitleaks and Trivy (see documentation)
 
-# Instalar repo-scan
+# Install repo-scan
 pip3 install repo-scan
 ```
 
-#### Opción 3: RPM Package
+#### Option 3: RPM Package
 ```bash
-# Construir el paquete RPM
+# Build the RPM package
 ./build_rpm.sh
 
-# Instalar el paquete
-sudo dnf install dist/repo-scan-1.1.0-1*.noarch.rpm
+# Install the package
+sudo dnf install dist/repo-scan-1.1.1-1*.noarch.rpm
 ```
 
-#### Opción 4: Instalar el RPM oficial
-Descarga los artefactos publicados en la sección de releases (`repo-scan-1.1.0-1.<dist>.noarch.rpm`) y ejecútalo:
+#### Option 4: Official RPM Installation
+Download the published artifacts from the releases section (`repo-scan-1.1.1-1.<dist>.noarch.rpm`) and install:
 
 ```bash
-sudo dnf install ./repo-scan-1.1.0-1.fc$(rpm -E %fedora).noarch.rpm
+sudo dnf install ./repo-scan-1.1.1-1.fc$(rpm -E %fedora).noarch.rpm
 ```
 
-El paquete instala:
+The package installs:
+- systemd service `repo-scan.service` (FastAPI backend)
+- Configuration in `/etc/repo-scan/config.yaml`
+- Runtime directories in `/var/lib/repo-scan`
+- Log rotation in `/etc/logrotate.d/repo-scan`
+- Bash/zsh completions and man page `repo-scan(1)`
 
-- Servicio systemd `repo-scan.service` (FastAPI backend)
-- Configuración en `/etc/repo-scan/config.yaml`
-- Directorios de runtime en `/var/lib/log/cache/repo-scan`
-- Rotación de logs en `/etc/logrotate.d/repo-scan`
-- Completados bash/zsh y página man `repo-scan(1)`
-
-### Instalación desde Código Fuente
+### Source Code Installation
 ```bash
-# Clonar el repositorio
+# Clone the repository
 git clone https://github.com/Origonlabs/CVE_Security.git
-cd repo-scan
+cd CVE_Security
 
-# Instalar en modo desarrollo
+# Install in development mode
 pip install -e .
 
-# O instalar normalmente
+# Or install normally
 pip install .
 ```
 
-## 🎯 Uso Básico
+## Usage
 
-### Interfaz Gráfica (GUI)
+### Graphical User Interface (GUI)
 ```bash
-# Lanzar GUI de escritorio
+# Launch desktop GUI
 repo-scan-gui
 
-# Lanzar interfaz web
+# Launch web interface
 repo-scan-gui --web
 
-# Interfaz web en puerto personalizado
+# Web interface on custom port
 repo-scan-gui --web --port 8080
 ```
 
-### Escaneo de Repositorio Local
+### Local Repository Scanning
 ```bash
-# Escanear repositorio local
+# Scan local repository
 repo-scan --path /path/to/repository
 
-# Escanear con scanners específicos
+# Scan with specific scanners
 repo-scan --path /path/to/repository --scanner semgrep --scanner gitleaks
 
-# Escanear con patrones de exclusión
+# Scan with exclusion patterns
 repo-scan --path /path/to/repository --exclude "*.test.js" --exclude "node_modules/*"
 ```
 
-### Escaneo de Repositorio Remoto
+### Remote Repository Scanning
 ```bash
-# Clonar y escanear repositorio remoto
+# Clone and scan remote repository
 repo-scan --url https://github.com/user/repo.git
 
-# Escanear rama específica
+# Scan specific branch
 repo-scan --url https://github.com/user/repo.git --branch develop
 ```
 
-### Generación de Reportes
+### Report Generation
 ```bash
-# Generar reporte JSON
+# Generate JSON report
 repo-scan --path /path/to/repository --format json --output ./reports
 
-# Generar reporte HTML
+# Generate HTML report
 repo-scan --path /path/to/repository --format html --output ./reports
 
-# Generar todos los formatos
+# Generate all formats
 repo-scan --path /path/to/repository --format all --output ./reports
 ```
 
-### Modo Verbose y Debug
+### Verbose and Debug Modes
 ```bash
-# Modo verbose para más información
+# Verbose mode for more information
 repo-scan --path /path/to/repository --verbose
 
-# Modo debug para información detallada
+# Debug mode for detailed information
 repo-scan --path /path/to/repository --debug
 ```
 
-## ⚙️ Configuración
+## Configuration
 
-### Archivo de Configuración
-El archivo de configuración se encuentra en `/etc/repo-scan/config.yaml` (instalación del sistema) o `~/.repo-scan/config.yaml` (instalación de usuario).
+### Configuration File
+The configuration file is located at `/etc/repo-scan/config.yaml` (system installation) or `~/.repo-scan/config.yaml` (user installation).
 
 ```yaml
-# Configuración general
+# General configuration
 debug: false
 verbose: false
 workspace_dir: "/var/tmp/repo-scan"
 max_workers: 4
 scan_timeout: 3600
 
-# Configuración de scanners
+# Scanner configuration
 scanners:
   semgrep:
     enabled: true
@@ -187,14 +188,14 @@ scanners:
     timeout: 300
     custom_config: null
 
-# Configuración de notificaciones
+# Notification configuration
 notifications:
   slack_webhook: "https://hooks.slack.com/services/..."
   email_smtp_server: "smtp.gmail.com"
   email_username: "user@example.com"
   email_to: ["admin@example.com"]
 
-# Configuración de scoring de riesgo
+# Risk scoring configuration
 risk_scoring:
   severity_weights:
     LOW: 10
@@ -208,7 +209,7 @@ risk_scoring:
     published_exploit: 1.5
 ```
 
-### Variables de Entorno
+### Environment Variables
 ```bash
 export REPO_SCAN_DEBUG=true
 export REPO_SCAN_VERBOSE=true
@@ -217,37 +218,37 @@ export DATABASE_URL="postgresql://user:pass@localhost/repo_scan"
 export SLACK_WEBHOOK="https://hooks.slack.com/services/..."
 ```
 
-## 🔧 API REST
+## REST API
 
-### Iniciar el Servidor API
+### Starting the API Server
 ```bash
-# Iniciar servidor API
+# Start API server
 repo-scan serve --host 0.0.0.0 --port 8000
 
-# Con autenticación
+# With authentication
 repo-scan serve --host 0.0.0.0 --port 8000 --auth-enabled
 ```
 
-### Endpoints Principales
+### Main Endpoints
 ```bash
-# Escanear repositorio
+# Scan repository
 curl -X POST http://localhost:8000/api/v1/scan \
   -H "Content-Type: application/json" \
   -d '{"repo_path": "/path/to/repo", "scanners": ["semgrep", "gitleaks"]}'
 
-# Obtener resultados de escaneo
+# Get scan results
 curl http://localhost:8000/api/v1/scan/{scan_id}
 
-# Listar scanners disponibles
+# List available scanners
 curl http://localhost:8000/api/v1/scanners
 
-# Obtener estadísticas
+# Get statistics
 curl http://localhost:8000/api/v1/stats
 ```
 
-## 🔌 Sistema de Plugins
+## Plugin System
 
-### Crear Plugin Personalizado
+### Creating Custom Plugins
 ```python
 from repo_scan.detectors.base import BaseDetector
 from repo_scan.detectors.registry import register_detector
@@ -262,18 +263,18 @@ class CustomDetector(BaseDetector):
         )
     
     def is_available(self) -> bool:
-        return True  # Implementar verificación de disponibilidad
+        return True  # Implement availability check
     
     def scan(self, scan_config: ScanConfig) -> List[Finding]:
         findings = []
-        # Implementar lógica de escaneo
+        # Implement scanning logic
         return findings
 
-# Registrar el plugin
+# Register the plugin
 register_detector(CustomDetector)
 ```
 
-## 🚀 Integración CI/CD
+## CI/CD Integration
 
 ### GitHub Actions
 ```yaml
@@ -289,7 +290,7 @@ jobs:
       - name: Install repo-scan
         run: |
           pip install repo-scan
-          # Instalar scanners
+          # Install scanners
           pip install semgrep bandit checkov
       
       - name: Run security scan
@@ -320,99 +321,99 @@ security_scan:
     expire_in: 1 week
 ```
 
-## 📊 Sistema de Scoring
+## Risk Scoring System
 
-### Factores de Puntuación
-- **Severidad Base**: LOW (10), MEDIUM (40), HIGH (75), CRITICAL (100)
-- **Exposición en Historial**: ×1.25 si se encuentra en commits anteriores
-- **Tipo de Secreto**: Claves privadas (×2.0), tokens API (×1.8)
-- **Explotabilidad**: ×1.5 si hay exploits publicados
-- **Rama de Producción**: ×1.3 si está en main/master/prod
-- **Confianza**: Alta confianza (×1.1), baja confianza (×0.8)
+### Scoring Factors
+- **Base Severity**: LOW (10), MEDIUM (40), HIGH (75), CRITICAL (100)
+- **History Exposure**: ×1.25 if found in previous commits
+- **Secret Type**: Private keys (×2.0), API tokens (×1.8)
+- **Exploitability**: ×1.5 if published exploits exist
+- **Production Branch**: ×1.3 if in main/master/prod
+- **Confidence**: High confidence (×1.1), low confidence (×0.8)
 
-### Niveles de Riesgo
-- **CRITICAL**: 75-100 puntos
-- **HIGH**: 50-74 puntos
-- **MEDIUM**: 25-49 puntos
-- **LOW**: 0-24 puntos
+### Risk Levels
+- **CRITICAL**: 75-100 points
+- **HIGH**: 50-74 points
+- **MEDIUM**: 25-49 points
+- **LOW**: 0-24 points
 
-## 🛠️ Desarrollo
+## Development
 
-### Configurar Entorno de Desarrollo
+### Setting Up Development Environment
 ```bash
-# Clonar repositorio
+# Clone repository
 git clone https://github.com/Origonlabs/CVE_Security.git
-cd repo-scan
+cd CVE_Security
 
-# Crear entorno virtual
+# Create virtual environment
 python3 -m venv venv
 source venv/bin/activate
 
-# Instalar dependencias de desarrollo
+# Install development dependencies
 pip install -e ".[dev]"
 
-# Instalar pre-commit hooks
+# Install pre-commit hooks
 pre-commit install
 
-# Ejecutar tests
+# Run tests
 pytest
 
-# Ejecutar linting
+# Run linting
 black src/
 isort src/
 flake8 src/
 mypy src/
 ```
 
-### Estructura del Proyecto
+### Project Structure
 ```
 repo-scan/
-├── src/repo_scan/           # Código fuente principal
-│   ├── cli.py              # Interfaz de línea de comandos
-│   ├── orchestrator.py     # Orquestador principal
-│   ├── detectors/          # Detectores de seguridad
-│   ├── report/             # Generadores de reportes
-│   ├── scoring.py          # Sistema de scoring
-│   └── core/               # Componentes centrales
-├── packaging/              # Archivos de empaquetado
-├── tests/                  # Tests unitarios
-├── docs/                   # Documentación
-└── examples/               # Ejemplos de uso
+├── src/repo_scan/           # Main source code
+│   ├── cli.py              # Command line interface
+│   ├── orchestrator.py     # Main orchestrator
+│   ├── detectors/          # Security detectors
+│   ├── report/             # Report generators
+│   ├── scoring.py          # Scoring system
+│   └── core/               # Core components
+├── packaging/              # Packaging files
+├── tests/                  # Unit tests
+├── docs/                   # Documentation
+└── examples/               # Usage examples
 ```
 
-## 📈 Monitoreo y Logs
+## Monitoring and Logs
 
-### Logs del Sistema
+### System Logs
 ```bash
-# Ver logs del servicio
+# View service logs
 journalctl -u repo-scan -f
 
-# Ver logs de aplicación
+# View application logs
 tail -f /var/log/repo-scan/repo-scan.log
 
-# Ver logs de errores
+# View error logs
 journalctl -u repo-scan --priority=err
 ```
 
-### Métricas y Monitoreo
-- Métricas de escaneo (duración, hallazgos, errores)
-- Uso de recursos (CPU, memoria, disco)
-- Disponibilidad de scanners
-- Estadísticas de uso de API
+### Metrics and Monitoring
+- Scanning metrics (duration, findings, errors)
+- Resource usage (CPU, memory, disk)
+- Scanner availability
+- API usage statistics
 
-## 🔒 Seguridad
+## Security
 
-### Mejores Prácticas
-- Ejecutar con usuario no privilegiado
-- Limitar acceso a directorios de trabajo
-- Validar entradas de usuario
-- Usar HTTPS para API
-- Rotar secretos regularmente
-- Monitorear logs de seguridad
+### Best Practices
+- Run with non-privileged user
+- Limit access to working directories
+- Validate user inputs
+- Use HTTPS for API
+- Rotate secrets regularly
+- Monitor security logs
 
-### Configuración de Seguridad
+### Security Configuration
 ```yaml
-# Configuración de seguridad
+# Security configuration
 security:
   verify_gpg_signatures: true
   allowed_git_protocols: ["https", "ssh"]
@@ -421,32 +422,32 @@ security:
   quarantine_suspicious_files: true
 ```
 
-## 🤝 Contribuir
+## Contributing
 
-1. Fork el repositorio
-2. Crear rama de feature (`git checkout -b feature/nueva-funcionalidad`)
-3. Commit cambios (`git commit -am 'Agregar nueva funcionalidad'`)
-4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
-5. Crear Pull Request
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/new-feature`)
+3. Commit your changes (`git commit -am 'Add new feature'`)
+4. Push to the branch (`git push origin feature/new-feature`)
+5. Create a Pull Request
 
-### Guías de Contribución
-- Seguir PEP 8 para código Python
-- Escribir tests para nuevas funcionalidades
-- Actualizar documentación
-- Usar conventional commits
+### Contribution Guidelines
+- Follow PEP 8 for Python code
+- Write tests for new features
+- Update documentation
+- Use conventional commits
 
-## 📄 Licencia
+## License
 
-Este proyecto está licenciado bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Soporte
+## Support
 
-- **Documentación**: [https://repo-scan.readthedocs.io](https://repo-scan.readthedocs.io)
-- **Issues**: [https://github.com/Origonlabs/CVE_Security/issues](https://github.com/Origonlabs/CVE_Security/issues)
-- **Discusiones**: [https://github.com/Origonlabs/CVE_Security/discussions](https://github.com/Origonlabs/CVE_Security/discussions)
+- **Documentation**: [docs/](docs/)
+- **Issues**: [GitHub Issues](https://github.com/Origonlabs/CVE_Security/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/Origonlabs/CVE_Security/discussions)
 - **Email**: security@example.com
 
-## 🙏 Agradecimientos
+## Acknowledgments
 
 - [Semgrep](https://semgrep.dev/) - SAST engine
 - [Gitleaks](https://github.com/zricethezav/gitleaks) - Secret detection

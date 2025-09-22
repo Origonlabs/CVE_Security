@@ -1,120 +1,120 @@
-# 🚀 Repo-Scan v1.1.1 - Release Notes
+# Repo-Scan v1.1.1 - Release Notes
 
-## 📋 Resumen
+## Summary
 
-Esta versión incluye actualizaciones importantes en la configuración del proyecto, corrección de enlaces y preparación para el lanzamiento oficial con paquetes RPM.
+This version includes important updates to project configuration, link corrections, and preparation for official release with RPM packages.
 
-## ✨ Nuevas Características
+## New Features
 
-### 🔗 Actualización de Enlaces
-- **Todos los enlaces de GitHub actualizados** al repositorio oficial `https://github.com/Origonlabs/CVE_Security`
-- **Metadatos del proyecto corregidos** en `pyproject.toml`
-- **Documentación actualizada** con enlaces funcionales
+### GitHub Links Update
+- **All GitHub links updated** to the official repository `https://github.com/Origonlabs/CVE_Security`
+- **Project metadata corrected** in `pyproject.toml`
+- **Documentation updated** with functional links
 
-### 📦 Mejoras en Empaquetado
-- **Preparación para lanzamiento oficial** con paquetes RPM
-- **Configuración de empaquetado mejorada**
-- **Scripts de instalación actualizados**
+### Packaging Improvements
+- **Preparation for official release** with RPM packages
+- **Improved packaging configuration**
+- **Updated installation scripts**
 
-## 🔧 Cambios Técnicos
+## Technical Changes
 
-### Archivos Actualizados
-- `README.md` - Enlaces de GitHub corregidos
-- `docs/README.md` - Documentación actualizada
-- `CHANGELOG.md` - Registro de cambios
-- `pyproject.toml` - Metadatos y versión actualizada
-- `README_RPM.md` - Enlaces de instalación
-- `packaging/installer.sh` - Script de instalación
-- `src/repo_scan/gui/main_window.py` - Enlaces en GUI
-- `packaging/repo-scan.service` - Documentación del servicio
+### Updated Files
+- `README.md` - GitHub links corrected
+- `docs/README.md` - Updated documentation
+- `CHANGELOG.md` - Change log
+- `pyproject.toml` - Updated metadata and version
+- `README_RPM.md` - Installation links
+- `packaging/installer.sh` - Installation script
+- `src/repo_scan/gui/main_window.py` - GUI links
+- `packaging/repo-scan.service` - Service documentation
 
-### Versión
-- **Versión anterior**: 1.1.0
-- **Versión actual**: 1.1.1
+### Version
+- **Previous version**: 1.1.0
+- **Current version**: 1.1.1
 
-## 📥 Instalación
+## Installation
 
-### Opción 1: Instalación desde RPM (Recomendado)
+### Option 1: Installation from RPM (Recommended)
 ```bash
-# Descargar el paquete RPM desde GitHub Releases
+# Download the RPM package from GitHub Releases
 wget https://github.com/Origonlabs/CVE_Security/releases/download/v1.1.1/repo-scan-1.1.1-1.fc43.noarch.rpm
 
-# Instalar el paquete
+# Install the package
 sudo dnf install repo-scan-1.1.1-1.fc43.noarch.rpm
 ```
 
-### Opción 2: Instalación desde Código Fuente
+### Option 2: Installation from Source Code
 ```bash
-# Clonar el repositorio
+# Clone the repository
 git clone https://github.com/Origonlabs/CVE_Security.git
 cd CVE_Security
 
-# Instalar dependencias
+# Install dependencies
 pip install -r requirements.txt
 
-# Instalar el paquete
+# Install the package
 pip install .
 ```
 
-### Opción 3: Instalación Automática
+### Option 3: Automatic Installation
 ```bash
-# Ejecutar el instalador automático
+# Run the automatic installer
 curl -sSL https://raw.githubusercontent.com/Origonlabs/CVE_Security/main/install_repo_scan.sh | bash
 ```
 
-## 🎯 Uso Rápido
+## Quick Usage
 
-### Interfaz Gráfica
+### Graphical Interface
 ```bash
-# Lanzar GUI de escritorio
+# Launch desktop GUI
 repo-scan-gui
 
-# Lanzar interfaz web
+# Launch web interface
 repo-scan-gui --web
 ```
 
-### Línea de Comandos
+### Command Line
 ```bash
-# Escanear repositorio local
+# Scan local repository
 repo-scan scan --path /path/to/repository
 
-# Escanear con scanners específicos
+# Scan with specific scanners
 repo-scan scan --path /path/to/repository --scanner semgrep --scanner gitleaks
 ```
 
-## 🔍 Características Principales
+## Key Features
 
-- **🔍 Múltiples Motores de Escaneo**: Semgrep, Gitleaks, Trivy, Bandit, Checkov
-- **📊 Sistema de Scoring Avanzado**: Puntuación de riesgo 0-100
-- **🎨 Interfaces Múltiples**: GUI, Web, CLI, API REST
-- **📈 Reportes Avanzados**: JSON, HTML, JUnit, SARIF, PDF
-- **🔌 Sistema de Plugins**: Arquitectura extensible
-- **🔗 Integraciones**: CI/CD, SIEM, Notificaciones
+- **Multiple Scanning Engines**: Semgrep, Gitleaks, Trivy, Bandit, Checkov
+- **Advanced Risk Scoring**: Risk scoring 0-100
+- **Multiple Interfaces**: GUI, Web, CLI, REST API
+- **Advanced Reports**: JSON, HTML, JUnit, SARIF, PDF
+- **Plugin System**: Extensible architecture
+- **Integrations**: CI/CD, SIEM, Notifications
 
-## 🛠️ Requisitos del Sistema
+## System Requirements
 
-- **Sistema Operativo**: Fedora 38+ (recomendado)
+- **Operating System**: Fedora 38+ (recommended)
 - **Python**: 3.11+
-- **Memoria**: 2GB RAM mínimo
-- **Espacio**: 1GB de espacio libre
+- **Memory**: 2GB RAM minimum
+- **Storage**: 1GB free space
 
-## 📚 Documentación
+## Documentation
 
-- **[README Principal](README.md)** - Guía de inicio rápido
-- **[Documentación Completa](docs/)** - Guías detalladas
-- **[API Reference](docs/API_REFERENCE.md)** - Referencia de API
-- **[Configuración](docs/CONFIGURATION.md)** - Guía de configuración
+- **[Main README](README.md)** - Quick start guide
+- **[Complete Documentation](docs/)** - Detailed guides
+- **[API Reference](docs/API_REFERENCE.md)** - API reference
+- **[Configuration](docs/CONFIGURATION.md)** - Configuration guide
 
-## 🤝 Soporte
+## Support
 
 - **Issues**: [GitHub Issues](https://github.com/Origonlabs/CVE_Security/issues)
-- **Discusiones**: [GitHub Discussions](https://github.com/Origonlabs/CVE_Security/discussions)
-- **Documentación**: [docs/](docs/)
+- **Discussions**: [GitHub Discussions](https://github.com/Origonlabs/CVE_Security/discussions)
+- **Documentation**: [docs/](docs/)
 
-## 🙏 Agradecimientos
+## Acknowledgments
 
-Gracias a todos los contribuidores y a la comunidad de seguridad por hacer posible este proyecto.
+Thanks to all contributors and the security community for making this project possible.
 
 ---
 
-**Repo-Scan v1.1.1** - Escaneo de seguridad avanzado para repositorios modernos 🚀
+**Repo-Scan v1.1.1** - Advanced security scanning for modern repositories

@@ -1,3 +1,3 @@
-35bb8ac1723100b90083120ad1892683449534d257b275ef4cc12fd1859f5a08  repo_scan-1.1.1.tar.gz
-b550a9bb5123c10ffdc6816e550e6f7fb31b9c419a83a7ab9c85dab8151c9e3b  repo_scan-1.1.1-py3-none-any.whl
+8a3373254ba09c3e100d2b8d6f3e851e663dfd4ee3b9e942c632d4a3ec2ff8c3  repo_scan-1.1.1.tar.gz
+e5f88037c8a85dc3898ec890c2e5a387d7be20f559f673fbbb845264fa0ac389  repo_scan-1.1.1-py3-none-any.whl
 d2959a2fad0e6a0bb2af07fd4dc0a958de3585c619df390da36c9ee359880199  repo-scan-1.1.1-1.fc43.noarch.rpm

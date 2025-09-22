@@ -1,7 +1,7 @@
 Repo-Scan v1.1.1 - Información del Release
 ===============================================
 
-Fecha: dom 21 sep 2025 23:58:52 CST
+Fecha: lun 22 sep 2025 00:08:49 CST
 Versión: 1.1.1
 Repositorio: https://github.com/Origonlabs/CVE_Security
 

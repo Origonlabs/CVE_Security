@@ -1,15 +1,15 @@
-# 🔒 Repo-Scan: Advanced Repository Security Scanner
+# Repo-Scan: Advanced Repository Security Scanner
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Fedora](https://img.shields.io/badge/Fedora-38+-blue.svg)](https://fedoraproject.org/)
 [![Security](https://img.shields.io/badge/security-scanner-red.svg)](https://github.com/Origonlabs/CVE_Security)
 
-**Repo-Scan** es una herramienta avanzada de escaneo de seguridad para repositorios de código que proporciona análisis integral de seguridad con múltiples motores de escaneo, puntuación de riesgo avanzada, y capacidades de reporte e integración de nivel empresarial.
+**Repo-Scan** is an advanced repository security scanning tool that provides comprehensive security analysis with multiple scanning engines, advanced risk scoring, and enterprise-level reporting and integration capabilities.
 
-## 🚀 Características Principales
+## Key Features
 
-### 🔍 Múltiples Motores de Escaneo
+### Multiple Scanning Engines
 - **SAST (Static Application Security Testing)**: Semgrep, Bandit, SonarQube
 - **SCA (Software Composition Analysis)**: Trivy, Grype, Snyk
 - **Secret Detection**: Gitleaks, TruffleHog, Detect-secrets
@@ -18,74 +18,74 @@
 - **Supply Chain**: Sigstore, Cosign, SLSA
 - **License Analysis**: Licensee, FOSSology
 
-### 📊 Sistema de Scoring Avanzado
-- **Algoritmo multi-dimensional** con factores de contexto
-- **Puntuación de riesgo 0-100** con priorización automática
-- **Análisis de exposición** en historial de Git
-- **Detección de explotabilidad** con CVE/CWE mapping
-- **Multiplicadores contextuales** (rama principal, producción, etc.)
+### Advanced Scoring System
+- **Multi-dimensional algorithm** with contextual factors
+- **Risk scoring 0-100** with automatic prioritization
+- **Exposure analysis** in Git history
+- **Exploitability detection** with CVE/CWE mapping
+- **Contextual multipliers** (main branch, production, etc.)
 
-### 🎨 Interfaces de Usuario
-- **GUI de Escritorio**: Interfaz nativa con Tkinter
-- **Interfaz Web**: Dashboard moderno con FastAPI y WebSockets
-- **CLI Avanzado**: Línea de comandos con autocompletado y colores
-- **API REST**: Documentación automática con Swagger/OpenAPI
+### User Interfaces
+- **Desktop GUI**: Native interface with Tkinter
+- **Web Interface**: Modern dashboard with FastAPI and WebSockets
+- **Advanced CLI**: Command line with autocompletion and colors
+- **REST API**: Automatic documentation with Swagger/OpenAPI
 
-### 📈 Reportes Avanzados
-- **JSON Estructurado**: Para integración con SIEM/SOAR
-- **HTML Interactivo**: Con gráficos, filtros y búsqueda
-- **JUnit XML**: Compatible con CI/CD
-- **SARIF**: Para compatibilidad con herramientas de seguridad
-- **PDF**: Reportes ejecutivos automatizados
-- **Formatos Personalizados**: Sistema de templates extensible
+### Advanced Reporting
+- **Structured JSON**: For SIEM/SOAR integration
+- **Interactive HTML**: With charts, filters and search
+- **JUnit XML**: CI/CD compatible
+- **SARIF**: For security tool compatibility
+- **PDF**: Automated executive reports
+- **Custom Formats**: Extensible template system
 
-### 🔌 Sistema de Plugins
-- **Arquitectura Extensible**: Plugins para scanners personalizados
-- **API de Plugin**: Desarrollo fácil de integraciones
-- **Gestión Automática**: Instalación, actualización y configuración
-- **Tipos de Plugin**: Scanner, Notifier, Reporter, Integrator, Analyzer
+### Plugin System
+- **Extensible Architecture**: Plugins for custom scanners
+- **Plugin API**: Easy integration development
+- **Automatic Management**: Installation, update and configuration
+- **Plugin Types**: Scanner, Notifier, Reporter, Integrator, Analyzer
 
-### 🔗 Integraciones Empresariales
+### Enterprise Integrations
 - **CI/CD**: GitHub Actions, GitLab CI, Jenkins, Azure DevOps
 - **SIEM**: Splunk, Elasticsearch, QRadar, Sentinel
 - **Ticketing**: Jira, ServiceNow, GitHub Issues
-- **Notificaciones**: Slack, Teams, Email, Webhooks
-- **APIs**: REST API completa con autenticación OIDC
+- **Notifications**: Slack, Teams, Email, Webhooks
+- **APIs**: Complete REST API with OIDC authentication
 
-## 📦 Instalación
+## Installation
 
-### Instalación desde RPM (Recomendado)
+### Installation from RPM (Recommended)
 ```bash
-# Descargar e instalar RPM
+# Download and install RPM
 sudo ./install_repo_scan.sh
 
-# Verificar instalación
+# Verify installation
 repo-scan --version
 repo-scan-gui --help
 ```
 
-### Instalación desde Código Fuente
+### Installation from Source Code
 ```bash
-# Clonar repositorio
+# Clone repository
 git clone https://github.com/Origonlabs/CVE_Security.git
-cd repo-scan
+cd CVE_Security
 
-# Instalar dependencias
+# Install dependencies
 pip install -r requirements.txt
 
-# Instalar en modo desarrollo
+# Install in development mode
 pip install -e .
 
-# O instalar normalmente
+# Or install normally
 pip install .
 ```
 
-### Instalación de Dependencias
+### Dependency Installation
 ```bash
-# Scanners requeridos
+# Required scanners
 sudo dnf install gitleaks semgrep trivy bandit checkov
 
-# O instalar individualmente
+# Or install individually
 # Gitleaks
 curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.18.0/gitleaks_8.18.0_linux_x64.tar.gz | tar -xz -C /usr/local/bin
 
@@ -102,47 +102,47 @@ pip install bandit
 pip install checkov
 ```
 
-## 🎯 Uso Básico
+## Basic Usage
 
-### Interfaz Gráfica (GUI)
+### Graphical User Interface (GUI)
 ```bash
-# Lanzar GUI de escritorio
+# Launch desktop GUI
 repo-scan-gui
 
-# Lanzar interfaz web
+# Launch web interface
 repo-scan-gui --web
 
-# Interfaz web en puerto personalizado
+# Web interface on custom port
 repo-scan-gui --web --port 8080
 ```
 
-### Escaneo de Repositorio Local
+### Local Repository Scanning
 ```bash
-# Escanear repositorio local
+# Scan local repository
 repo-scan scan --path /path/to/repository
 
-# Escanear con scanners específicos
+# Scan with specific scanners
 repo-scan scan --path /path/to/repository --scanner semgrep --scanner gitleaks
 
-# Escanear con patrones de exclusión
+# Scan with exclusion patterns
 repo-scan scan --path /path/to/repository --exclude "*.test.js" --exclude "node_modules/*"
 ```
 
-### Escaneo de Repositorio Remoto
+### Remote Repository Scanning
 ```bash
-# Clonar y escanear repositorio remoto
+# Clone and scan remote repository
 repo-scan scan --url https://github.com/user/repo.git
 
-# Escanear rama específica
+# Scan specific branch
 repo-scan scan --url https://github.com/user/repo.git --branch develop
 
-# Escanear commit específico
+# Scan specific commit
 repo-scan scan --url https://github.com/user/repo.git --commit abc123
 ```
 
-### Opciones Avanzadas
+### Advanced Options
 ```bash
-# Escaneo con configuración personalizada
+# Scan with custom configuration
 repo-scan scan \
   --path /path/to/repository \
   --scanner semgrep \
@@ -161,9 +161,9 @@ repo-scan scan \
   --config-file ./custom-config.yaml
 ```
 
-## ⚙️ Configuración
+## Configuration
 
-### Archivo de Configuración
+### Configuration File
 ```yaml
 # ~/.config/repo-scan/config.yaml
 general:
@@ -207,14 +207,14 @@ notifications:
     to_addresses: ["security-team@company.com"]
 ```
 
-### Variables de Entorno
+### Environment Variables
 ```bash
-# Configuración general
+# General configuration
 export REPO_SCAN_WORKSPACE_DIR="/var/lib/repo-scan"
 export REPO_SCAN_LOG_LEVEL="INFO"
 export REPO_SCAN_MAX_WORKERS="4"
 
-# Notificaciones
+# Notifications
 export REPO_SCAN_SLACK_WEBHOOK_URL="https://hooks.slack.com/..."
 export REPO_SCAN_SLACK_CHANNEL="#security-alerts"
 export REPO_SCAN_EMAIL_SMTP_SERVER="smtp.company.com"
@@ -222,55 +222,55 @@ export REPO_SCAN_EMAIL_SMTP_USERNAME="alerts@company.com"
 export REPO_SCAN_EMAIL_SMTP_PASSWORD="password"
 ```
 
-## 🔧 Comandos Avanzados
+## Advanced Commands
 
-### Gestión de Configuración
+### Configuration Management
 ```bash
-# Ver configuración actual
+# View current configuration
 repo-scan config show
 
-# Establecer configuración
+# Set configuration
 repo-scan config set scanners.semgrep.timeout 1800
 
-# Exportar/importar configuración
+# Export/import configuration
 repo-scan config export --output config-backup.yaml
 repo-scan config import --file config-backup.yaml
 ```
 
-### Gestión de Plugins
+### Plugin Management
 ```bash
-# Listar plugins
+# List plugins
 repo-scan plugins list
 
-# Instalar plugin
+# Install plugin
 repo-scan plugins install custom-scanner
 
-# Habilitar/deshabilitar plugin
+# Enable/disable plugin
 repo-scan plugins enable custom-scanner
 repo-scan plugins disable custom-scanner
 ```
 
-### Gestión de Reportes
+### Report Management
 ```bash
-# Listar reportes
+# List reports
 repo-scan reports list
 
-# Ver reporte específico
+# View specific report
 repo-scan reports show scan_20241221_143022
 
-# Comparar reportes
+# Compare reports
 repo-scan reports compare scan_old scan_new
 
-# Generar reporte consolidado
+# Generate consolidated report
 repo-scan reports consolidate --from 2024-01-01 --to 2024-12-31
 ```
 
-### Servidor API
+### API Server
 ```bash
-# Iniciar servidor API
+# Start API server
 repo-scan server start --host 0.0.0.0 --port 8000
 
-# Con autenticación OIDC
+# With OIDC authentication
 repo-scan server start \
   --auth-enabled \
   --auth-provider oidc \
@@ -279,7 +279,7 @@ repo-scan server start \
   --oidc-issuer https://auth.company.com
 ```
 
-## 🔗 Integración CI/CD
+## CI/CD Integration
 
 ### GitHub Actions
 ```yaml
@@ -311,9 +311,9 @@ security-scan:
       junit: security-reports/scan_*.xml
 ```
 
-## 📊 Ejemplos de Salida
+## Output Examples
 
-### Reporte JSON
+### JSON Report
 ```json
 {
   "scan_id": "scan_20241221_143022",
@@ -338,39 +338,39 @@ security-scan:
 }
 ```
 
-### Reporte HTML
-- Dashboard interactivo con gráficos
-- Filtros por severidad, scanner, archivo
-- Búsqueda en tiempo real
-- Exportación a PDF
-- Enlaces a remediación
+### HTML Report
+- Interactive dashboard with charts
+- Filters by severity, scanner, file
+- Real-time search
+- PDF export
+- Remediation links
 
-## 🛠️ Desarrollo
+## Development
 
-### Estructura del Proyecto
+### Project Structure
 ```
 repo-scan/
-├── src/repo_scan/           # Código fuente principal
-│   ├── core/               # Modelos y configuración
-│   ├── detectors/          # Implementaciones de scanners
-│   ├── gui/               # Interfaces gráficas
-│   ├── plugins/           # Sistema de plugins
-│   ├── notifications/     # Sistema de notificaciones
-│   └── report/            # Generadores de reportes
-├── docs/                  # Documentación
-├── examples/              # Ejemplos de uso
-├── packaging/             # Archivos de empaquetado
-└── tests/                 # Tests unitarios
+├── src/repo_scan/           # Main source code
+│   ├── core/               # Models and configuration
+│   ├── detectors/          # Scanner implementations
+│   ├── gui/               # Graphical interfaces
+│   ├── plugins/           # Plugin system
+│   ├── notifications/     # Notification system
+│   └── report/            # Report generators
+├── docs/                  # Documentation
+├── examples/              # Usage examples
+├── packaging/             # Packaging files
+└── tests/                 # Unit tests
 ```
 
-### Contribuir
-1. Fork el repositorio
-2. Crear rama de feature (`git checkout -b feature/amazing-feature`)
-3. Commit cambios (`git commit -m 'Add amazing feature'`)
-4. Push a la rama (`git push origin feature/amazing-feature`)
-5. Abrir Pull Request
+### Contributing
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-### Desarrollo de Plugins
+### Plugin Development
 ```python
 from repo_scan.plugins.base import BasePlugin, PluginType
 
@@ -379,42 +379,42 @@ class CustomScanner(BasePlugin):
         return PluginMetadata(
             name="custom-scanner",
             type=PluginType.SCANNER,
-            # ... más metadatos
+            # ... more metadata
         )
     
     def scan_repository(self, repo_path):
-        # Implementar lógica de escaneo
+        # Implement scanning logic
         return findings
 ```
 
-## 📚 Documentación Completa
+## Complete Documentation
 
-- **[Características Avanzadas](docs/ADVANCED_FEATURES.md)** - Funcionalidades avanzadas
-- **[Referencia CLI](docs/CLI_REFERENCE.md)** - Comandos completos
-- **[Referencia API](docs/API_REFERENCE.md)** - API REST completa
-- **[Configuración](docs/CONFIGURATION.md)** - Configuración avanzada
-- **[Desarrollo de Plugins](docs/PLUGIN_DEVELOPMENT.md)** - Crear plugins
-- **[Guía de Integración](docs/INTEGRATION_GUIDE.md)** - Integraciones CI/CD y SIEM
+- **[Advanced Features](ADVANCED_FEATURES.md)** - Advanced functionality
+- **[CLI Reference](CLI_REFERENCE.md)** - Complete commands
+- **[API Reference](API_REFERENCE.md)** - Complete REST API
+- **[Configuration](CONFIGURATION.md)** - Advanced configuration
+- **[Plugin Development](PLUGIN_DEVELOPMENT.md)** - Create plugins
+- **[Integration Guide](INTEGRATION_GUIDE.md)** - CI/CD and SIEM integrations
 
-## 🤝 Soporte
+## Support
 
-- **Documentación**: [docs/](docs/)
+- **Documentation**: [docs/](docs/)
 - **Issues**: [GitHub Issues](https://github.com/Origonlabs/CVE_Security/issues)
-- **Discusiones**: [GitHub Discussions](https://github.com/Origonlabs/CVE_Security/discussions)
+- **Discussions**: [GitHub Discussions](https://github.com/Origonlabs/CVE_Security/discussions)
 - **Email**: security-team@company.com
 
-## 📄 Licencia
+## License
 
-Este proyecto está licenciado bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Agradecimientos
+## Acknowledgments
 
-- [Semgrep](https://semgrep.dev/) - Análisis estático de código
-- [Gitleaks](https://github.com/gitleaks/gitleaks) - Detección de secretos
-- [Trivy](https://trivy.dev/) - Análisis de vulnerabilidades
-- [Bandit](https://bandit.readthedocs.io/) - Análisis de seguridad Python
-- [Checkov](https://www.checkov.io/) - Análisis de infraestructura como código
+- [Semgrep](https://semgrep.dev/) - Static code analysis
+- [Gitleaks](https://github.com/gitleaks/gitleaks) - Secret detection
+- [Trivy](https://trivy.dev/) - Vulnerability analysis
+- [Bandit](https://bandit.readthedocs.io/) - Python security analysis
+- [Checkov](https://www.checkov.io/) - Infrastructure as code analysis
 
 ---
 
-**Repo-Scan** - Escaneo de seguridad avanzado para repositorios modernos 🚀
+**Repo-Scan** - Advanced security scanning for modern repositories
