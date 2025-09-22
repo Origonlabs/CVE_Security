@@ -1,0 +1,272 @@
+# Example CI/CD integration for repo-scan
+# This file shows how to integrate repo-scan into your CI/CD pipeline
+
+# GitHub Actions example
+name: Security Scan with Repo-Scan
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Full history for secret scanning
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install repo-scan and dependencies
+      run: |
+        # Install repo-scan
+        pip install repo-scan
+        
+        # Install security scanners
+        pip install semgrep bandit checkov
+        # Install other scanners as needed
+    
+    - name: Run security scan
+      run: |
+        repo-scan --path . \
+          --format all \
+          --output ./security-reports \
+          --parallel 4 \
+          --timeout 1800 \
+          --verbose
+      env:
+        REPO_SCAN_DEBUG: true
+    
+    - name: Check risk threshold
+      run: |
+        # Extract risk score and fail if too high
+        RISK_SCORE=$(python -c "
+        import json, glob
+        files = glob.glob('security-reports/scan_*.json')
+        if files:
+            with open(files[0]) as f:
+                data = json.load(f)
+                print(data.get('risk_score', 0))
+        else:
+            print(0)
+        ")
+        
+        echo "Risk Score: $RISK_SCORE"
+        
+        # Fail if risk score exceeds threshold
+        if (( $(echo "$RISK_SCORE > 75" | bc -l) )); then
+          echo "❌ Risk score too high: $RISK_SCORE (threshold: 75)"
+          exit 1
+        else
+          echo "✅ Risk score acceptable: $RISK_SCORE"
+        fi
+    
+    - name: Upload security reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: security-reports
+        path: security-reports/
+        retention-days: 30
+    
+    - name: Comment PR with results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const path = require('path');
+          
+          // Find the latest JSON report
+          const reportsDir = './security-reports';
+          const jsonFiles = fs.readdirSync(reportsDir)
+            .filter(file => file.endsWith('.json'))
+            .map(file => ({
+              name: file,
+              time: fs.statSync(path.join(reportsDir, file)).mtime
+            }))
+            .sort((a, b) => b.time - a.time);
+          
+          if (jsonFiles.length > 0) {
+            const reportFile = path.join(reportsDir, jsonFiles[0].name);
+            const report = JSON.parse(fs.readFileSync(reportFile, 'utf8'));
+            
+            const riskLevel = report.risk_level;
+            const riskScore = report.risk_score;
+            const totalFindings = report.findings.length;
+            
+            const criticalFindings = report.findings.filter(f => f.severity === 'CRITICAL').length;
+            const highFindings = report.findings.filter(f => f.severity === 'HIGH').length;
+            const mediumFindings = report.findings.filter(f => f.severity === 'MEDIUM').length;
+            const lowFindings = report.findings.filter(f => f.severity === 'LOW').length;
+            
+            const emoji = riskLevel === 'CRITICAL' ? '🚨' : 
+                         riskLevel === 'HIGH' ? '⚠️' : 
+                         riskLevel === 'MEDIUM' ? '⚡' : '✅';
+            
+            const comment = `## ${emoji} Security Scan Results
+            
+            **Risk Level:** ${riskLevel} (${riskScore.toFixed(1)}/100)
+            **Total Findings:** ${totalFindings}
+            
+            ### Breakdown by Severity:
+            - 🚨 Critical: ${criticalFindings}
+            - ⚠️ High: ${highFindings}
+            - ⚡ Medium: ${mediumFindings}
+            - ✅ Low: ${lowFindings}
+            
+            ### Top Findings:
+            ${report.findings.slice(0, 5).map(f => 
+              `- **${f.severity}**: ${f.title} (${f.scanner})`
+            ).join('\n')}
+            
+            📊 [View detailed report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+          }
+
+---
+
+# GitLab CI example
+stages:
+  - security
+
+security_scan:
+  stage: security
+  image: python:3.11
+  before_script:
+    - pip install repo-scan semgrep bandit checkov
+  script:
+    - repo-scan --path . --format all --output ./reports --parallel 4 --timeout 1800
+    - |
+      # Check risk threshold
+      RISK_SCORE=$(python -c "
+      import json, glob
+      files = glob.glob('reports/scan_*.json')
+      if files:
+          with open(files[0]) as f:
+              data = json.load(f)
+              print(data.get('risk_score', 0))
+      else:
+          print(0)
+      ")
+      
+      echo "Risk Score: $RISK_SCORE"
+      
+      if (( $(echo "$RISK_SCORE > 75" | bc -l) )); then
+        echo "❌ Risk score too high: $RISK_SCORE (threshold: 75)"
+        exit 1
+      else
+        echo "✅ Risk score acceptable: $RISK_SCORE"
+      fi
+  artifacts:
+    reports:
+      junit: reports/scan_*.xml
+    paths:
+      - reports/
+    expire_in: 1 week
+  only:
+    - main
+    - develop
+    - merge_requests
+
+---
+
+# Jenkins Pipeline example
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                    pip install repo-scan semgrep bandit checkov
+                '''
+            }
+        }
+        
+        stage('Security Scan') {
+            steps {
+                sh '''
+                    repo-scan --path . \
+                      --format all \
+                      --output ./security-reports \
+                      --parallel 4 \
+                      --timeout 1800
+                '''
+            }
+        }
+        
+        stage('Check Risk Threshold') {
+            steps {
+                script {
+                    def riskScore = sh(
+                        script: '''
+                            python -c "
+                            import json, glob
+                            files = glob.glob('security-reports/scan_*.json')
+                            if files:
+                                with open(files[0]) as f:
+                                    data = json.load(f)
+                                    print(data.get('risk_score', 0))
+                            else:
+                                print(0)
+                            "
+                        ''',
+                        returnStdout: true
+                    ).trim() as Double
+                    
+                    echo "Risk Score: ${riskScore}"
+                    
+                    if (riskScore > 75) {
+                        error("Risk score too high: ${riskScore} (threshold: 75)")
+                    } else {
+                        echo "Risk score acceptable: ${riskScore}"
+                    }
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            archiveArtifacts artifacts: 'security-reports/**', fingerprint: true
+            publishHTML([
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'security-reports',
+                reportFiles: 'scan_*.html',
+                reportName: 'Security Report'
+            ])
+        }
+        
+        failure {
+            emailext (
+                subject: "Security Scan Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+                body: "Security scan failed for ${env.JOB_NAME} build ${env.BUILD_NUMBER}",
+                to: "${env.CHANGE_AUTHOR_EMAIL}"
+            )
+        }
+    }
+}

@@ -1,0 +1,41 @@
+[Unit]
+Description=Repo-Scan Security Scanning Service
+Documentation=https://github.com/example/repo-scan
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=repo-scan
+Group=repo-scan
+WorkingDirectory=/var/lib/repo-scan
+ExecStart=/usr/bin/repo-scan serve --host 0.0.0.0 --port 8000
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=mixed
+KillSignal=SIGINT
+TimeoutStopSec=30
+Restart=on-failure
+RestartSec=5
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/repo-scan /var/log/repo-scan /var/cache/repo-scan /tmp
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+
+# Environment
+Environment=PYTHONPATH=/usr/lib/python3.11/site-packages
+Environment=REPO_SCAN_CONFIG=/etc/repo-scan/config.yaml
+Environment=REPO_SCAN_WORKSPACE=/var/tmp/repo-scan
+Environment=REPO_SCAN_LOG_LEVEL=INFO
+
+[Install]
+WantedBy=multi-user.target

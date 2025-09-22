@@ -1,0 +1,195 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run security scan daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch full history for secret scanning
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git curl wget unzip
+    
+    - name: Install security scanners
+      run: |
+        # Install Semgrep
+        python -m pip install semgrep
+        
+        # Install Gitleaks
+        wget -O gitleaks.tar.gz https://github.com/zricethezav/gitleaks/releases/download/v8.18.0/gitleaks_8.18.0_linux_x64.tar.gz
+        tar -xzf gitleaks.tar.gz
+        sudo mv gitleaks /usr/local/bin/
+        chmod +x /usr/local/bin/gitleaks
+        
+        # Install Trivy
+        wget -O trivy.tar.gz https://github.com/aquasecurity/trivy/releases/download/v0.45.1/trivy_0.45.1_Linux-64bit.tar.gz
+        tar -xzf trivy.tar.gz
+        sudo mv trivy /usr/local/bin/
+        chmod +x /usr/local/bin/trivy
+        
+        # Install Bandit
+        python -m pip install bandit
+        
+        # Install Checkov
+        python -m pip install checkov
+    
+    - name: Install repo-scan
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install .
+    
+    - name: Create reports directory
+      run: mkdir -p reports
+    
+    - name: Run security scan
+      run: |
+        repo-scan --path . \
+          --format all \
+          --output ./reports \
+          --parallel 4 \
+          --timeout 1800 \
+          --verbose
+      env:
+        REPO_SCAN_DEBUG: true
+    
+    - name: Check scan results
+      run: |
+        # Check if scan was successful
+        if [ -f "reports/scan_*.json" ]; then
+          echo "✅ Security scan completed successfully"
+          
+          # Extract risk score from JSON report
+          RISK_SCORE=$(python -c "
+          import json, glob
+          files = glob.glob('reports/scan_*.json')
+          if files:
+              with open(files[0]) as f:
+                  data = json.load(f)
+                  print(data.get('risk_score', 0))
+          else:
+              print(0)
+          ")
+          
+          echo "Risk Score: $RISK_SCORE"
+          
+          # Fail if risk score is too high
+          if (( $(echo "$RISK_SCORE > 75" | bc -l) )); then
+            echo "❌ Risk score too high: $RISK_SCORE (threshold: 75)"
+            exit 1
+          elif (( $(echo "$RISK_SCORE > 50" | bc -l) )); then
+            echo "⚠️ Risk score elevated: $RISK_SCORE (threshold: 50)"
+          else
+            echo "✅ Risk score acceptable: $RISK_SCORE"
+          fi
+        else
+          echo "❌ Security scan failed - no report generated"
+          exit 1
+        fi
+    
+    - name: Upload security reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: security-reports-${{ github.run_number }}
+        path: reports/
+        retention-days: 30
+    
+    - name: Comment PR with results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const path = require('path');
+          
+          // Find the latest JSON report
+          const reportsDir = './reports';
+          const jsonFiles = fs.readdirSync(reportsDir)
+            .filter(file => file.endsWith('.json'))
+            .map(file => ({
+              name: file,
+              time: fs.statSync(path.join(reportsDir, file)).mtime
+            }))
+            .sort((a, b) => b.time - a.time);
+          
+          if (jsonFiles.length > 0) {
+            const reportFile = path.join(reportsDir, jsonFiles[0].name);
+            const report = JSON.parse(fs.readFileSync(reportFile, 'utf8'));
+            
+            const riskLevel = report.risk_level;
+            const riskScore = report.risk_score;
+            const totalFindings = report.findings.length;
+            
+            const criticalFindings = report.findings.filter(f => f.severity === 'CRITICAL').length;
+            const highFindings = report.findings.filter(f => f.severity === 'HIGH').length;
+            const mediumFindings = report.findings.filter(f => f.severity === 'MEDIUM').length;
+            const lowFindings = report.findings.filter(f => f.severity === 'LOW').length;
+            
+            const emoji = riskLevel === 'CRITICAL' ? '🚨' : 
+                         riskLevel === 'HIGH' ? '⚠️' : 
+                         riskLevel === 'MEDIUM' ? '⚡' : '✅';
+            
+            const comment = `## ${emoji} Security Scan Results
+            
+            **Risk Level:** ${riskLevel} (${riskScore.toFixed(1)}/100)
+            **Total Findings:** ${totalFindings}
+            
+            ### Breakdown by Severity:
+            - 🚨 Critical: ${criticalFindings}
+            - ⚠️ High: ${highFindings}
+            - ⚡ Medium: ${mediumFindings}
+            - ✅ Low: ${lowFindings}
+            
+            ### Top Findings:
+            ${report.findings.slice(0, 5).map(f => 
+              `- **${f.severity}**: ${f.title} (${f.scanner})`
+            ).join('\n')}
+            
+            📊 [View detailed report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+          }
+    
+    - name: Notify on high risk
+      if: failure()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: failure
+        channel: '#security'
+        text: |
+          🚨 Security scan failed for ${{ github.repository }}
+          
+          Risk score exceeded threshold or scan failed.
+          
+          Repository: ${{ github.repository }}
+          Branch: ${{ github.ref_name }}
+          Commit: ${{ github.sha }}
+          
+          [View details](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

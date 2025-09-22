@@ -1,0 +1,119 @@
+# Pre-commit configuration for repo-scan
+# This file configures pre-commit hooks to run security scans before commits
+
+repos:
+  # Basic code quality hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: debug-statements
+      - id: check-json
+      - id: check-toml
+      - id: check-xml
+      - id: check-merge-conflict
+      - id: mixed-line-ending
+
+  # Python code formatting
+  - repo: https://github.com/psf/black
+    rev: 23.7.0
+    hooks:
+      - id: black
+        language_version: python3.11
+
+  # Python import sorting
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        args: ["--profile", "black"]
+
+  # Python linting
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
+    hooks:
+      - id: flake8
+        args: [--max-line-length=88, --extend-ignore=E203, W503]
+
+  # Python type checking
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.5.1
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-all]
+        args: [--ignore-missing-imports]
+
+  # Security scanning with Bandit
+  - repo: https://github.com/pycqa/bandit
+    rev: 1.7.5
+    hooks:
+      - id: bandit
+        args: [-r, src/, -f, json, -o, bandit-report.json]
+        exclude: tests/
+
+  # Secret detection with Gitleaks
+  - repo: https://github.com/zricethezav/gitleaks
+    rev: v8.18.0
+    hooks:
+      - id: gitleaks
+        args: [--verbose]
+
+  # SAST with Semgrep
+  - repo: https://github.com/returntocorp/semgrep
+    rev: v1.45.0
+    hooks:
+      - id: semgrep
+        args: [--config=auto, --json, --output=semgrep-report.json]
+
+  # Custom repo-scan hook
+  - repo: local
+    hooks:
+      - id: repo-scan-pre-commit
+        name: repo-scan pre-commit
+        entry: repo-scan --path . --format json --output .pre-commit-reports --timeout 300
+        language: system
+        files: \.(py|js|ts|java|go|rs|php|rb|cs|cpp|c|h|hpp|kt|scala|swift|yaml|yml|json|dockerfile|tf|hcl)$
+        pass_filenames: false
+        always_run: false
+        stages: [pre-commit]
+
+  # YAML security scanning
+  - repo: https://github.com/checkov/checkov
+    rev: 3.0.0
+    hooks:
+      - id: checkov
+        args: [--framework, yaml, --output, json, --output-file-path, checkov-report.json]
+        files: \.(yaml|yml)$
+
+  # Dockerfile security scanning
+  - repo: https://github.com/checkov/checkov
+    rev: 3.0.0
+    hooks:
+      - id: checkov-docker
+        args: [--framework, dockerfile, --output, json, --output-file-path, checkov-docker-report.json]
+        files: Dockerfile
+
+  # Terraform security scanning
+  - repo: https://github.com/checkov/checkov
+    rev: 3.0.0
+    hooks:
+      - id: checkov-terraform
+        args: [--framework, terraform, --output, json, --output-file-path, checkov-tf-report.json]
+        files: \.(tf|tfvars)$
+
+# Configuration for specific hooks
+ci:
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit.com hooks
+
+    for more information, see https://pre-commit.ci
+  autofix_prs: true
+  autoupdate_branch: ''
+  autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
+  autoupdate_schedule: weekly
+  skip: []
+  submodules: false

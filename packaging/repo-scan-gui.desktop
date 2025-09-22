@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Repo-Scan Security Scanner
+Comment=Advanced repository security scanning tool with GUI
+Exec=repo-scan-gui
+Icon=repo-scan
+Terminal=false
+Categories=Development;Security;Utility;
+Keywords=security;scanning;repository;vulnerability;analysis;
+StartupNotify=true
+MimeType=application/x-git;
