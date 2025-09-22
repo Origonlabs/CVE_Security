@@ -158,15 +158,44 @@ class Config(BaseModel):
             config_data["database"] = {"url": os.getenv("DATABASE_URL")}
         
         # API settings
+        api_config: Dict[str, Any] = {}
         if os.getenv("API_HOST"):
-            config_data["api"] = {"host": os.getenv("API_HOST")}
-        
+            api_config["host"] = os.getenv("API_HOST")
         if os.getenv("API_PORT"):
-            config_data["api"] = {"port": int(os.getenv("API_PORT"))}
-        
+            api_config["port"] = int(os.getenv("API_PORT"))
+        if os.getenv("API_WORKERS"):
+            api_config["workers"] = int(os.getenv("API_WORKERS"))
+        if os.getenv("API_RELOAD"):
+            api_config["reload"] = os.getenv("API_RELOAD").lower() in ("true", "1", "yes")
+        if api_config:
+            existing_api = config_data.get("api", {})
+            existing_api.update(api_config)
+            config_data["api"] = existing_api
+
         # Notification settings
+        notification_config: Dict[str, Any] = {}
         if os.getenv("SLACK_WEBHOOK"):
-            config_data["notifications"] = {"slack_webhook": os.getenv("SLACK_WEBHOOK")}
+            notification_config["slack_webhook"] = os.getenv("SLACK_WEBHOOK")
+        if os.getenv("SLACK_CHANNEL"):
+            notification_config["slack_channel"] = os.getenv("SLACK_CHANNEL")
+        if os.getenv("EMAIL_SMTP_SERVER"):
+            notification_config["email_smtp_server"] = os.getenv("EMAIL_SMTP_SERVER")
+        if os.getenv("EMAIL_SMTP_PORT"):
+            notification_config["email_smtp_port"] = int(os.getenv("EMAIL_SMTP_PORT"))
+        if os.getenv("EMAIL_USERNAME"):
+            notification_config["email_username"] = os.getenv("EMAIL_USERNAME")
+        if os.getenv("EMAIL_PASSWORD"):
+            notification_config["email_password"] = os.getenv("EMAIL_PASSWORD")
+        if os.getenv("EMAIL_FROM"):
+            notification_config["email_from"] = os.getenv("EMAIL_FROM")
+        if os.getenv("EMAIL_TO"):
+            notification_config["email_to"] = [
+                addr.strip() for addr in os.getenv("EMAIL_TO").split(",") if addr.strip()
+            ]
+        if notification_config:
+            existing_notifications = config_data.get("notifications", {})
+            existing_notifications.update(notification_config)
+            config_data["notifications"] = existing_notifications
         
         return cls(**config_data)
     

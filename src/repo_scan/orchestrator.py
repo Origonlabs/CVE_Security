@@ -307,6 +307,25 @@ class ScanOrchestrator:
             })
         
         return scanners
+
+    def list_detectors(self) -> List[str]:
+        """Return the registered detector names."""
+        return self.detector_registry.list_detectors()
+
+    def get_detector_info(self, detector_name: str) -> Optional[Dict[str, Any]]:
+        """Expose detector metadata via the orchestrator."""
+        detector = self.detector_registry.get_detector(detector_name)
+        if not detector:
+            return None
+        return {
+            "name": detector.name,
+            "scanner_type": detector.scanner_type.value,
+            "description": detector.description,
+            "available": detector.is_available(),
+            "enabled": self.config.is_scanner_enabled(detector.name),
+            "required_dependencies": detector.get_required_dependencies(),
+            "optional_dependencies": detector.get_optional_dependencies(),
+        }
     
     def validate_scanner_configuration(self) -> Dict[str, List[str]]:
         """Validate scanner configuration and return issues."""

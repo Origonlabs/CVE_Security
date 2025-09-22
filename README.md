@@ -71,11 +71,26 @@ pip3 install repo-scan
 #### Opción 3: RPM Package
 ```bash
 # Construir el paquete RPM
-rpmbuild -ba packaging/repo-scan.spec
+./build_rpm.sh
 
 # Instalar el paquete
-sudo dnf install dist/repo-scan-1.0.0-1.fc38.noarch.rpm
+sudo dnf install dist/repo-scan-1.1.0-1*.noarch.rpm
 ```
+
+#### Opción 4: Instalar el RPM oficial
+Descarga los artefactos publicados en la sección de releases (`repo-scan-1.1.0-1.<dist>.noarch.rpm`) y ejecútalo:
+
+```bash
+sudo dnf install ./repo-scan-1.1.0-1.fc$(rpm -E %fedora).noarch.rpm
+```
+
+El paquete instala:
+
+- Servicio systemd `repo-scan.service` (FastAPI backend)
+- Configuración en `/etc/repo-scan/config.yaml`
+- Directorios de runtime en `/var/lib/log/cache/repo-scan`
+- Rotación de logs en `/etc/logrotate.d/repo-scan`
+- Completados bash/zsh y página man `repo-scan(1)`
 
 ### Instalación desde Código Fuente
 ```bash

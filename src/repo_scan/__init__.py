@@ -11,7 +11,7 @@ A comprehensive security scanning tool for repositories that supports:
 - And more through an extensible plugin system
 """
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 __author__ = "Security Team"
 __email__ = "security@example.com"
 

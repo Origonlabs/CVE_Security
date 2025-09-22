@@ -12,7 +12,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-REPO_SCAN_VERSION="1.0.0"
+REPO_SCAN_VERSION="$(python3 -c "import tomllib;print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")"
 INSTALL_DIR="/opt/repo-scan"
 CONFIG_DIR="/etc/repo-scan"
 DATA_DIR="/var/lib/repo-scan"
@@ -100,17 +100,12 @@ install_dependencies() {
     # Install Trivy
     if ! command -v trivy &> /dev/null; then
         log_info "Installing Trivy..."
-        # Add Trivy repository
-        curl -sfL https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor -o /usr/share/keyrings/trivy-archive-keyring.gpg
-        echo "deb [signed-by=/usr/share/keyrings/trivy-archive-keyring.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/trivy.list
-        
-        # For Fedora, we'll use the binary directly
         TRIVY_VERSION="0.45.1"
-        wget -O /tmp/trivy.tar.gz "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
-        tar -xzf /tmp/trivy.tar.gz -C /tmp
-        mv /tmp/trivy /usr/local/bin/
-        chmod +x /usr/local/bin/trivy
-        rm /tmp/trivy.tar.gz
+        TRIVY_ARCHIVE="trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+        curl -sSL "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/${TRIVY_ARCHIVE}" -o /tmp/${TRIVY_ARCHIVE}
+        tar -xzf /tmp/${TRIVY_ARCHIVE} -C /tmp
+        install -m 0755 /tmp/trivy /usr/local/bin/trivy
+        rm -f /tmp/${TRIVY_ARCHIVE} /tmp/trivy
     else
         log_success "Trivy already installed"
     fi

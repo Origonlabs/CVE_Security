@@ -1,0 +1,13 @@
+/var/log/repo-scan/*.log {
+    daily
+    missingok
+    rotate 14
+    compress
+    delaycompress
+    notifempty
+    create 0640 repo-scan repo-scan
+    sharedscripts
+    postrotate
+        systemctl reload repo-scan.service >/dev/null 2>&1 || true
+    endscript
+}

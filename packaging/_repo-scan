@@ -1,0 +1,3 @@
+#compdef repo-scan
+
+eval "$(env _REPO_SCAN_COMPLETE=zsh_source repo-scan)"

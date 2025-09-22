@@ -68,7 +68,7 @@ package: build
 		--define "_rpmdir $(PWD)/dist"
 
 install-rpm:
-	sudo dnf install dist/repo-scan-1.0.0-1.fc38.noarch.rpm
+	sudo dnf install dist/repo-scan-1.1.0-1*.noarch.rpm
 
 # Development
 run:

@@ -7,23 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Pending
+- (sin entradas)
+
+## [1.1.0] - 2025-09-21
+
 ### Added
-- Initial release of repo-scan
-- Support for multiple security scanners (Semgrep, Gitleaks, Trivy, Bandit, Checkov)
-- Advanced risk scoring system with customizable factors
-- Multiple report formats (JSON, HTML, JUnit)
-- REST API for automation
-- CLI interface with Typer
-- Plugin system for extensibility
-- CI/CD integration examples
-- RPM packaging for Fedora
-- Comprehensive documentation
+- FastAPI backend con gestor de colas asincrónicas y API `/api/v1/*` lista para producción.
+- Interfaz web rediseñada con dashboards “glassmorphism”, tarjetas dinámicas y gráficos Chart.js.
+- Paquete RPM reforzado con logrotate, completions para bash/zsh y página man.
+- Documentación ampliada en `docs/` (API, configuración, integraciones y plugins).
+
+### Changed
+- Merge inteligente de variables de entorno para configuraciones API/notifications.
+- Makefile y build scripts actualizados para automatizar `rpmbuild` y versionado 1.1.0.
+
+### Fixed
+- Evitar instalaciones duplicadas del servicio systemd en el SPEC.
+- Formularios web ahora serializan correctamente múltiples motores y mantienen progreso en vivo.
 
 ### Security
-- Secure execution with non-privileged user
-- Input validation and sanitization
-- Resource limits and timeouts
-- GPG signature verification support
+- Se mantienen límites de tiempo, usuario dedicado y rotación de logs por defecto.
 
 ## [1.0.0] - 2024-01-XX
 

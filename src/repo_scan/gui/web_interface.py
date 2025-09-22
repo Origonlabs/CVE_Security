@@ -75,9 +75,12 @@ class WebInterface:
             """Main dashboard page."""
             return self.templates.TemplateResponse("index.html", {
                 "request": request,
-                "title": "Repo-Scan Dashboard"
+                "title": "Repo-Scan Dashboard",
+                "config": self.config,
+                "orchestrator": self.orchestrator,
+                "datetime": datetime,
             })
-        
+
         @self.app.get("/scan", response_class=HTMLResponse)
         async def scan_page(request: Request):
             """Scan configuration page."""
@@ -85,14 +88,15 @@ class WebInterface:
             return self.templates.TemplateResponse("scan.html", {
                 "request": request,
                 "title": "Start Security Scan",
-                "scanners": scanners
+                "scanners": scanners,
+                "config": self.config,
             })
         
         @self.app.post("/api/scan/start")
         async def start_scan(
             repo_path: Optional[str] = Form(None),
             repo_url: Optional[str] = Form(None),
-            scanners: List[str] = Form(...),
+            scanners: Optional[List[str]] = Form(None),
             timeout: int = Form(1800),
             parallel: bool = Form(True),
             output_format: str = Form("all")
@@ -101,6 +105,24 @@ class WebInterface:
             if not repo_path and not repo_url:
                 raise HTTPException(status_code=400, detail="Repository path or URL required")
             
+            available_scanners = [
+                meta["name"] for meta in self.orchestrator.get_available_scanners()
+            ]
+            if scanners:
+                invalid = sorted(set(scanners) - set(available_scanners))
+                if invalid:
+                    raise HTTPException(
+                        status_code=400,
+                        detail=f"Unknown scanners requested: {', '.join(invalid)}",
+                    )
+                enabled_scanners = scanners
+            else:
+                enabled_scanners = [
+                    name for name in available_scanners if self.config.is_scanner_enabled(name)
+                ]
+                if not enabled_scanners:
+                    enabled_scanners = available_scanners
+
             # Generate scan ID
             scan_id = f"scan_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
             
@@ -109,14 +131,16 @@ class WebInterface:
                 "id": scan_id,
                 "repo_path": repo_path,
                 "repo_url": repo_url,
-                "scanners": scanners,
+                "scanners": enabled_scanners,
                 "timeout": timeout,
                 "parallel": parallel,
                 "output_format": output_format,
                 "status": "starting",
                 "progress": 0,
                 "started_at": datetime.now(),
-                "result": None
+                "result": None,
+                "exclude_patterns": None,
+                "include_patterns": None,
             }
             
             # Start scan in background
@@ -216,20 +240,32 @@ class WebInterface:
             """Settings configuration page."""
             return self.templates.TemplateResponse("settings.html", {
                 "request": request,
-                "title": "Settings"
+                "title": "Settings",
+                "config": self.config,
+                "orchestrator": self.orchestrator,
+                "datetime": datetime,
             })
         
         @self.app.get("/api/config")
         async def get_config():
             """Get current configuration."""
+            scanner_data = {}
+            for name in self.orchestrator.list_detectors():
+                config = self.config.get_scanner_config(name)
+                info = self.orchestrator.get_detector_info(name) or {"description": "Unknown"}
+                scanner_data[name] = {
+                    "enabled": config.enabled,
+                    "timeout": config.timeout,
+                    "available": info.get("available", False),
+                    "description": info.get("description", ""),
+                    "required_dependencies": info.get("required_dependencies", []),
+                }
+
             return JSONResponse({
                 "workspace_dir": self.config.workspace_dir,
                 "max_workers": self.config.max_workers,
                 "scan_timeout": self.config.scan_timeout,
-                "scanners": {name: {
-                    "enabled": self.config.is_scanner_enabled(name),
-                    "timeout": self.config.get_scanner_config(name).timeout
-                } for name in self.orchestrator.list_detectors()}
+                "scanners": scanner_data,
             })
         
         @self.app.post("/api/config")
@@ -279,12 +315,16 @@ class WebInterface:
             scan_info["progress"] = 10
             
             # Run the scan
-            result = self.orchestrator.scan_repository(
-                repo_path=scan_info["repo_path"],
-                repo_url=scan_info["repo_url"],
-                scanners=scan_info["scanners"],
-                timeout=scan_info["timeout"],
-                parallel=scan_info["parallel"]
+            result = await asyncio.to_thread(
+                self.orchestrator.scan_repository,
+                scan_info["repo_path"],
+                scan_info["repo_url"],
+                None,
+                scan_info["scanners"],
+                scan_info.get("exclude_patterns"),
+                scan_info.get("include_patterns"),
+                scan_info["timeout"],
+                scan_info["parallel"],
             )
             
             # Update progress

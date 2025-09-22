@@ -1,0 +1,11 @@
+# bash completion for repo-scan
+_repo_scan_completion() {
+    local IFS=$'\n'
+    COMPREPLY=( $( env COMP_WORDS="${COMP_WORDS[*]}" \
+                       COMP_CWORD=$COMP_CWORD \
+                       _REPO_SCAN_COMPLETE=bash_complete \
+                       repo-scan ) )
+    return 0
+}
+
+complete -o default -F _repo_scan_completion repo-scan

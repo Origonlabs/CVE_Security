@@ -1,0 +1,52 @@
+.TH REPO-SCAN 1 "September 2025" "Repo-Scan 1.1.0" "User Commands"
+.SH NAME
+repo-scan \- meta orquestador de seguridad de repositorios
+.SH SYNOPSIS
+.B repo-scan
+[ICOMMANDR] [IOPTIONSR]
+.SH DESCRIPTION
+Repo-Scan es una herramienta avanzada que ejecuta motores de análisis de seguridad
+(SAST, SCA, detección de secretos, IaC y contenedores) sobre repositorios de código.
+Combina resultados mediante un motor de correlación, aplica un scoring de riesgo
+contextual y produce reportes en múltiples formatos.
+
+Los comandos principales se exponen mediante la interfaz CLI construida con Typer.
+Use Brepo-scan --helpR para descubrir los subcomandos disponibles y
+Brepo-scan COMMAND --helpR para detalles específicos.
+.SH OPTIONS
+.TP
+.B --help
+Mostrar ayuda general de la herramienta.
+.TP
+.B --version
+Imprimir la versión instalada.
+.SH SUBCOMANDOS DESTACADOS
+.TP
+.B repo-scan scan
+Ejecuta un escaneo contra un repositorio local o remoto.
+.TP
+.B repo-scan serve
+Inicia el servicio FastAPI para consumir la funcionalidad vía REST.
+.TP
+.B repo-scan list-scanners
+Muestra los motores de seguridad registrados y su disponibilidad actual.
+.SH FICHEROS
+.TP
+.I /etc/repo-scan/config.yaml
+Archivo de configuración principal utilizado por el orquestador.
+.TP
+.I /var/log/repo-scan/
+Directorios de logs agrupados por ejecución y motor.
+.SH SERVICIO
+Al instalar el paquete RPM se despliega Brepo-scan.serviceR, un servicio systemd
+que expone el backend REST. Puede activarse con:
+.RS
+.nf
+systemctl enable --now repo-scan.service
+.fi
+.RE
+.SH VEÁSE TAMBIÉN
+Repo-Scan API reference (I/docs/API_REFERENCE.mdR), documentación de configuración
+(I/docs/CONFIGURATION.mdR) y guía de integraciones CI/CD (I/docs/INTEGRATION_GUIDE.mdR).
+.SH AUTOR
+Security Team <security@example.com>
